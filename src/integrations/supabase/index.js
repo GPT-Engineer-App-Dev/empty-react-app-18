@@ -1,3 +1,10 @@
+import { createClient } from '@supabase/supabase-js';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_PROJECT_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
 /* supabase integration types
 
 Events // table: events
@@ -128,4 +135,19 @@ export const useDeleteVenue = () => {
             queryClient.invalidateQueries('venues');
         },
     });
+};
+
+function fromSupabase(promise) {
+    return promise.then(({ data, error }) => {
+        if (error) throw error;
+        return data;
+    });
+}
+
+export const SupabaseProvider = ({ children }) => {
+    return (
+        <SupabaseContext.Provider value={{ supabase }}>
+            {children}
+        </SupabaseContext.Provider>
+    );
 };
