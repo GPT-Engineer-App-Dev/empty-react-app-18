@@ -33,6 +33,12 @@ Comments // table: comments
     content: string
     event_id: number // foreign key to Events
 
+Venues // table: venues
+    id: number
+    created_at: string
+    name: string
+    location: string
+
 */
 
 // Hooks for Events table
@@ -103,6 +109,42 @@ export const useDeleteComment = () => {
         mutationFn: (commentId) => fromSupabase(supabase.from('comments').delete().eq('id', commentId)),
         onSuccess: () => {
             queryClient.invalidateQueries('comments');
+        },
+    });
+};
+
+// Hooks for Venues table
+export const useVenues = () => useQuery({
+    queryKey: ['venues'],
+    queryFn: () => fromSupabase(supabase.from('venues').select('*')),
+});
+
+export const useAddVenue = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newVenue) => fromSupabase(supabase.from('venues').insert([newVenue])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('venues');
+        },
+    });
+};
+
+export const useUpdateVenue = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedVenue) => fromSupabase(supabase.from('venues').update(updatedVenue).eq('id', updatedVenue.id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('venues');
+        },
+    });
+};
+
+export const useDeleteVenue = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (venueId) => fromSupabase(supabase.from('venues').delete().eq('id', venueId)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('venues');
         },
     });
 };
