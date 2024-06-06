@@ -1,12 +1,19 @@
 import { createClient } from '@supabase/supabase-js';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { createContext } from 'react';
+import React from 'react';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_PROJECT_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-const SupabaseContext = createContext();
+const queryClient = new QueryClient();
+
+export const SupabaseProvider = ({ children }) => (
+  <QueryClientProvider client={queryClient}>
+    {children}
+  </QueryClientProvider>
+);
 
 /* supabase integration types
 
@@ -146,11 +153,3 @@ function fromSupabase(promise) {
         return data;
     });
 }
-
-export const SupabaseProvider = ({ children }) => {
-    return (
-        <SupabaseContext.Provider value={{ supabase }}>
-            {children}
-        </SupabaseContext.Provider>
-    );
-};
